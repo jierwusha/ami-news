@@ -1,0 +1,147 @@
+services:
+    # 基础服务先启动
+    redis:
+        image: redis:alpine
+        restart: always
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis-data:/data
+        networks:
+            - aminews-network
+
+    mysql:
+        image: mysql:8.0
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456
+            MYSQL_DATABASE: aminews
+            MYSQL_USER: aminews
+            MYSQL_PASSWORD: 123456
+            TZ: Asia/Shanghai
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./aminews-backend/AmiNews.sql:/docker-entrypoint-initdb.d/AmiNews.sql
+            - mysql-data:/var/lib/mysql
+        networks:
+            - aminews-network
+
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+        container_name: aminews-elasticsearch
+        restart: always
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        environment:
+            - discovery.type=single-node
+            - xpack.security.enabled=false
+            - xpack.security.enrollment.enabled=false
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - TZ=Asia/Shanghai
+            - network.host=0.0.0.0
+            - transport.host=0.0.0.0
+        volumes:
+            - elasticsearch-data:/usr/share/elasticsearch/data
+        networks:
+            - aminews-network
+
+    browserless:
+        image: browserless/chrome
+        restart: always
+        networks:
+            - aminews-network
+        ulimits:
+            core:
+                hard: 0
+                soft: 0
+
+    # 中间服务依赖基础服务
+    rsshub:
+        image: diygod/rsshub
+        restart: always
+        ports:
+            - "1200:1200"
+        environment:
+            NODE_ENV: production
+            CACHE_TYPE: redis
+            REDIS_URL: "redis://redis:6379/"
+            PUPPETEER_WS_ENDPOINT: "ws://browserless:3000"
+        networks:
+            - aminews-network
+        depends_on:
+            - redis
+            - browserless
+
+    # 后端依赖所有基础服务
+    backend:
+        build:
+            context: ./aminews-backend
+            dockerfile: Dockerfile
+        restart: always
+        ports:
+            - "8080:8080"
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod
+            - SPRING_ELASTICSEARCH_URIS=http://elasticsearch:9200
+            - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/aminews?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8
+            - SPRING_DATASOURCE_USERNAME=aminews
+            - SPRING_DATASOURCE_PASSWORD=123456
+            - SPRING_DATA_REDIS_HOST=redis
+            - SPRING_DATA_REDIS_PORT=6379
+            - RSSHUB_BASE_URL=http://rsshub:1200
+            - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_ELASTICSEARCH=DEBUG
+            - LOGGING_LEVEL_ORG_ELASTICSEARCH_CLIENT=DEBUG
+        volumes:
+            - ./aminews-backend/src/main/resources/default_subscribe_list.json:/app/config/default_subscribe_list.json:ro
+        networks:
+            - aminews-network
+        depends_on:
+            - mysql
+            - redis
+            - elasticsearch
+            - rsshub
+
+
+    # 前端依赖后端
+    frontend:
+        build:
+            context: ./aminews-frontend
+            dockerfile: Dockerfile
+        restart: always
+        ports:
+            - "3000:3000"
+        environment:
+            - REACT_APP_API_URL=http://localhost/api
+            - REACT_APP_RSSHUB_URL=http://localhost/rsshub
+        networks:
+            - aminews-network
+        depends_on:
+            - backend
+
+    # nginx 最后启动，依赖前后端
+    nginx:
+        image: nginx:alpine
+        restart: always
+        ports:
+            - "80:80"
+        volumes:
+            - ./nginx.conf:/etc/nginx/nginx.conf:ro
+        networks:
+            - aminews-network
+        depends_on:
+            - frontend
+            - backend
+
+networks:
+    aminews-network:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.20.0.0/16
+
+volumes:
+    redis-data:
+    elasticsearch-data:
+    mysql-data:

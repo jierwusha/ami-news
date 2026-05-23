@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: aminews-backend-prod  # 添加这行用于标识
+  elasticsearch:
+    uris: http://elasticsearch:9200
+    connection-timeout: 10s
+    socket-timeout: 60s
+    index:
+      news-vectors:
+        number-of-shards: 1
+        number-of-replicas: 0
+        mapping:
+          title_vector:
+            type: dense_vector
+            dims: 1024
+          content_vector:
+            type: dense_vector
+            dims: 1024
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+  datasource:
+    url: jdbc:mysql://mysql:3306/aminews?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8
+    username: aminews
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mail:
+    host: smtp.qq.com
+    username: 2892375641@qq.com
+    password: ltqdwxqwcgnkdffh
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      force-request: true
+      force-response: true
+
+jwt:
+  secret: caonimacaonimacaonimacaonimacaonimacaonima
+  expiration: 864000000
+
+app:
+  default-subscribe-list-path: /app/config/default_subscribe_list.json
+
+openai:
+  apiKey: "sk-cbmjmxwpnwatjxghersghsawlttpkykwgnsshyodkxexwlfz"
+  baseUrl: "https://api.siliconflow.cn/v1"
+  modelName: "Qwen/Qwen3-14B"
+  embeddingModelName: "Qwen/Qwen3-Embedding-0.6B"
+  promptPrefix: "请根据以下内容，生成一条简短的摘要："
+
+logging:
+  level:
+    org.springframework.data.elasticsearch: DEBUG
+    org.elasticsearch.client: DEBUG
+    com.project.aminewsbackend: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [PROD] %-5level %logger{36} - %msg%n"  # 添加 [PROD] 标识

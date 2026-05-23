@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.aminewsbackend.mapper.ChannelMapper">
+
+    <resultMap id="BaseResultMap" type="com.project.aminewsbackend.entity.Channel">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="link" column="link" jdbcType="VARCHAR"/>
+            <result property="atomLink" column="atom_link" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="icon" column="icon" jdbcType="VARCHAR"/>
+            <result property="categary" column="categary" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,link,
+        atom_link,description,icon,
+        categary,create_time,update_time
+    </sql>
+</mapper>

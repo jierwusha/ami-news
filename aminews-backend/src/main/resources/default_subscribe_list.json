@@ -1,0 +1,46 @@
+[
+  {
+    "folder": "热门",
+    "urls": [
+      "http://rsshub:1200/baidu/top",
+      "http://rsshub:1200/zhihu/hot",
+      "http://rsshub:1200/weibo/search/hot",
+      "http://rsshub:1200/hupu/all/topic-daily",
+      "http://rsshub:1200/36kr/hot-list"
+    ]
+  },
+  {
+    "folder": "传统媒体",
+    "urls": [
+      "http://rsshub:1200/cctv/news",
+      "http://rsshub:1200/xinhuanet/app",
+      "http://rsshub:1200/people",
+      "http://rsshub:1200/china/news",
+      "http://rsshub:1200/qstheory/magazine/qs",
+      "http://rsshub:1200/news/xhsxw"
+    ]
+  },
+  {
+    "folder": "新媒体",
+    "urls": [
+      "http://rsshub:1200/163/news/rank/whole/click/day",
+      "http://rsshub:1200/sina/rollnews",
+      "http://rsshub:1200/sspai/index",
+      "http://rsshub:1200/sciencenet/blog",
+      "http://rsshub:1200/thepaper/featured",
+      "http://rsshub:1200/readhub/daily",
+      "http://rsshub:1200/huxiu/moment"
+    ]
+  },
+  {
+    "folder": "武大专区",
+    "urls": [
+      "http://rsshub:1200/whu/news",
+      "http://rsshub:1200/whu/cs/0",
+      "http://rsshub:1200/whu/cs/1",
+      "http://rsshub:1200/whu/cs/2",
+      "http://rsshub:1200/whu/cs/3",
+      "http://rsshub:1200/baidu/tieba/forum/%E6%AD%A6%E6%B1%89%E5%A4%A7%E5%AD%A6"
+    ]
+  }
+]

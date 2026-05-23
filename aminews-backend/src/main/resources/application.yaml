@@ -1,0 +1,64 @@
+spring:
+  profiles:
+    active: dev
+  elasticsearch:
+    uris: http://localhost:9200
+    connection-timeout: 10s
+    socket-timeout: 60s
+    # 添加向量检索相关配置
+    index:
+      news-vectors:
+        number-of-shards: 1
+        number-of-replicas: 0
+        mapping:
+          title_vector:
+            type: dense_vector
+            dims: 1024
+          content_vector:
+            type: dense_vector
+            dims: 1024
+  mail:
+    host: smtp.qq.com
+    username: 2892375641@qq.com
+    password: ltqdwxqwcgnkdffh
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/aminews?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      force-request: true
+      force-response: true
+
+jwt:
+  secret: caonimacaonimacaonimacaonimacaonimacaonima
+  expiration: 864000000 # in seconds
+
+
+app:
+  default-subscribe-list-path: default_subscribe_list.json
+
+openai:
+    apiKey: "sk-cbmjmxwpnwatjxghersghsawlttpkykwgnsshyodkxexwlfz"
+    baseUrl: "https://api.siliconflow.cn/v1"
+    modelName: "Qwen/Qwen3-14B"
+    embeddingModelName: "Qwen/Qwen3-Embedding-0.6B"
+    promptPrefix: "请根据以下内容，生成一条简短的摘要："

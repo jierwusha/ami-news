@@ -1,0 +1,96 @@
+services:
+    rsshub:
+        # two ways to enable puppeteer:
+        # * comment out marked lines, then use this image instead: diygod/rsshub:chromium-bundled
+        # * (consumes more disk space and memory) leave everything unchanged
+        image: diygod/rsshub
+        restart: always
+        ports:
+            - "1200:1200"
+        environment:
+            NODE_ENV: production
+            CACHE_TYPE: redis
+            REDIS_URL: "redis://redis:6379/"
+            PUPPETEER_WS_ENDPOINT: "ws://browserless:3000" # marked
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:1200/healthz"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+        depends_on:
+            - redis
+            - browserless # marked
+
+    browserless: # marked
+        image: browserless/chrome # marked
+        restart: always # marked
+        ulimits: # marked
+            core: # marked
+                hard: 0 # marked
+                soft: 0 # marked
+        healthcheck: # marked
+            test: ["CMD", "curl", "-f", "http://localhost:3000/pressure"] # marked
+            interval: 30s # marked
+            timeout: 10s # marked
+            retries: 3 # marked
+
+    redis:
+        image: redis:alpine
+        restart: always
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis-data:/data
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+            start_period: 5s
+
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+        container_name: aminews-elasticsearch
+        restart: always
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        environment:
+            - discovery.type=single-node
+            - xpack.security.enabled=false
+            - xpack.security.enrollment.enabled=false
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+            - TZ=Asia/Shanghai
+        volumes:
+            - elasticsearch-data:/usr/share/elasticsearch/data
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+            start_period: 60s
+    
+    mysql:
+      image: mysql:8.0
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: 123456   # 设置root密码
+        MYSQL_DATABASE: aminews            # 初始化数据库名
+        MYSQL_USER: aminews                # 新建用户
+        MYSQL_PASSWORD: 123456         # 新建用户密码
+      ports:
+        - "3306:3306"
+      volumes:
+        - ./aminews-backend/AmiNews.sql:/docker-entrypoint-initdb.d/AmiNews.sql
+        - mysql-data:/var/lib/mysql
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+
+
+volumes:
+    redis-data:
+    elasticsearch-data:
+    mysql-data:

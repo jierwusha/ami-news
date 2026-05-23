@@ -1,0 +1,232 @@
+/*
+ * 全局 z-index 规范
+ *
+ * 为了避免层级混乱，统一管理所有z-index值
+ * 分层级设计，每个层级预留100个数值空间
+ */
+
+:root {
+  /* 基础层级 (0-99) */
+  --z-base: 0;
+  --z-background: 1;
+  --z-content: 10;
+  /* 界面层级 (100-199) */
+  --z-page-header: 100; /* 普通页面头部 */
+  --z-navigation: 110; /* 导航栏 */
+  --z-sidebar: 120; /* 侧边栏（应该高于页面头部） */
+  --z-sidebar-header: 130; /* 侧边栏头部 */
+  --z-tabs: 140;
+
+  /* 交互层级 (200-299) */
+  --z-button: 200;
+  --z-card: 210;
+  --z-hover-effect: 220;
+  --z-focus-effect: 230;
+
+  /* 浮层层级 (300-399) */
+  --z-tooltip: 300;
+  --z-popover: 310;
+  --z-dropdown: 320;
+  --z-menu: 330;
+  /* 遮罩层级 (400-499) */
+  --z-backdrop: 400;
+  --z-sidebar-overlay: 110; /* 侧边栏遮罩，需要低于sidebar但高于页面内容 */
+  --z-overlay: 410;
+  --z-loading: 420;
+
+  /* 弹窗层级 (500-599) */
+  --z-modal: 500;
+  --z-dialog: 510;
+  --z-alert: 520;
+  --z-notification: 530;
+
+  /* 下拉菜单层级 (600-699) */
+  --z-dropdown-overlay: 600;
+  --z-dropdown-menu: 610;
+  --z-context-menu: 620;
+  --z-mega-menu: 630;
+
+  /* 系统层级 (700-799) */
+  --z-fixed-header: 700;
+  --z-sticky-nav: 710;
+  --z-floating-button: 720;
+  --z-back-to-top: 730;
+
+  /* 顶层级 (800-899) */
+  --z-fullscreen: 800;
+  --z-debugger: 810;
+  --z-dev-tools: 820;
+
+  /* 紧急层级 (900-999) */
+  --z-emergency: 900;
+  --z-critical: 950;
+  --z-maximum: 999;
+}
+
+/*
+ * 层级使用说明：
+ *
+ * 1. 基础层级 (0-99)
+ *    - 页面基础内容，正常文档流
+ *
+ * 2. 界面层级 (100-199)
+ *    - 页面主要结构：侧边栏、头部、导航等
+ *
+ * 3. 交互层级 (200-299)
+ *    - 可交互元素：按钮、卡片、悬浮效果等
+ *
+ * 4. 浮层层级 (300-399)
+ *    - 轻量级悬浮元素：工具提示、弹出框等
+ *
+ * 5. 遮罩层级 (400-499)
+ *    - 背景遮罩：加载中、半透明背景等
+ *
+ * 6. 弹窗层级 (500-599)
+ *    - 模态框、对话框、通知等
+ *
+ * 7. 下拉菜单层级 (600-699)
+ *    - 各种下拉菜单、上下文菜单等
+ *
+ * 8. 系统层级 (700-799)
+ *    - 固定定位的系统元素
+ *
+ * 9. 顶层级 (800-899)
+ *    - 全屏元素、开发工具等
+ *
+ * 10. 紧急层级 (900-999)
+ *     - 紧急情况下的最高层级元素
+ *
+ * 使用建议：
+ * - 优先使用预定义的CSS变量
+ * - 如需自定义值，请在对应层级范围内选择
+ * - 避免使用过大的数值（如999999）
+ * - 新增层级请更新此文档
+ */
+
+/*
+ * 便捷混合类
+ * 可以在需要时直接使用这些工具类
+ */
+.z-base {
+  z-index: var(--z-base);
+}
+.z-background {
+  z-index: var(--z-background);
+}
+.z-content {
+  z-index: var(--z-content);
+}
+
+.z-page-header {
+  z-index: var(--z-page-header);
+}
+.z-navigation {
+  z-index: var(--z-navigation);
+}
+.z-sidebar {
+  z-index: var(--z-sidebar);
+}
+.z-sidebar-header {
+  z-index: var(--z-sidebar-header);
+}
+.z-tabs {
+  z-index: var(--z-tabs);
+}
+
+.z-button {
+  z-index: var(--z-button);
+}
+.z-card {
+  z-index: var(--z-card);
+}
+.z-hover-effect {
+  z-index: var(--z-hover-effect);
+}
+.z-focus-effect {
+  z-index: var(--z-focus-effect);
+}
+
+.z-tooltip {
+  z-index: var(--z-tooltip);
+}
+.z-popover {
+  z-index: var(--z-popover);
+}
+.z-dropdown {
+  z-index: var(--z-dropdown);
+}
+.z-menu {
+  z-index: var(--z-menu);
+}
+
+.z-backdrop {
+  z-index: var(--z-backdrop);
+}
+.z-sidebar-overlay {
+  z-index: var(--z-sidebar-overlay);
+}
+.z-overlay {
+  z-index: var(--z-overlay);
+}
+.z-loading {
+  z-index: var(--z-loading);
+}
+
+.z-modal {
+  z-index: var(--z-modal);
+}
+.z-dialog {
+  z-index: var(--z-dialog);
+}
+.z-alert {
+  z-index: var(--z-alert);
+}
+.z-notification {
+  z-index: var(--z-notification);
+}
+
+.z-dropdown-overlay {
+  z-index: var(--z-dropdown-overlay);
+}
+.z-dropdown-menu {
+  z-index: var(--z-dropdown-menu);
+}
+.z-context-menu {
+  z-index: var(--z-context-menu);
+}
+.z-mega-menu {
+  z-index: var(--z-mega-menu);
+}
+
+.z-fixed-header {
+  z-index: var(--z-fixed-header);
+}
+.z-sticky-nav {
+  z-index: var(--z-sticky-nav);
+}
+.z-floating-button {
+  z-index: var(--z-floating-button);
+}
+.z-back-to-top {
+  z-index: var(--z-back-to-top);
+}
+
+.z-fullscreen {
+  z-index: var(--z-fullscreen);
+}
+.z-debugger {
+  z-index: var(--z-debugger);
+}
+.z-dev-tools {
+  z-index: var(--z-dev-tools);
+}
+
+.z-emergency {
+  z-index: var(--z-emergency);
+}
+.z-critical {
+  z-index: var(--z-critical);
+}
+.z-maximum {
+  z-index: var(--z-maximum);
+}
